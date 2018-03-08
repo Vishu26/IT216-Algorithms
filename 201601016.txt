@@ -1,0 +1,105 @@
+class node:
+    def __init__(self):
+      self.dist = -1
+      self.color = 'w'
+      self.parent = None
+      self.adj = []
+
+class edge:
+    def __init__(self,u=None,v=None,t=None):
+      self.u = u
+      self.v = v
+      self.t = t
+    def vertices(self):
+      return (self.u,self.v)
+
+def bfs(g,s,E):
+    done = []
+    q = [s]
+    while q:
+      v = q.pop(0)
+      done.append(edge(v,g[v].parent,'tree edge'))
+      for u in g[v].adj:
+        if g[u].color=='w':
+          q.append(u)
+          g[u].dist = g[v].dist +1
+          g[u].color = 'g'
+          g[u].parent = v
+      g[v].color = 'b'
+
+def classify_edges(E,g):
+    for e in E:
+      if e.t != 'tree edge':
+        if g[e.vertices()[0]].dist == g[e.vertices()[1]].dist:
+          e.t = 'horizontal ce'
+        else:
+          e.t = 'vertical ce'
+
+def connectedness(g):
+    for v in g:
+      if v.dist == -1:
+        print('Graph is disconnected')
+
+def bipartite(E):
+  for e in E:
+    if e.t == 'horizontal ce':
+      print("The Graph is not Bipartite")
+      return
+  print("The Graph is Bipartite")
+    
+def components(g):
+  component = 1
+  for vertex in enumerate(g):
+    if vertex[1].color=='w':
+      g[vertex[0]].dist = 0
+      g[vertex[0]].color = 'g'
+      bfs(g,vertex[0],E)
+      component+=1
+  return component
+
+def common_ancestor(g, u, v):
+  node1 = g[u]
+  node2 = g[v]
+  while node1.parent!=None:
+    while node2.parent!=None:
+      if node1.parent == node2.parent:
+        return node1.parent
+      else:
+        node2 = node2.parent
+    node2 = g[v]
+    node1 = node1.parent
+  return None
+      
+def shortest_cycle(g, E):
+  length_of_cycle = float('inf')
+  for edge in E:
+    if e.t != 'tree edge':
+      ancestor = common_ancestor(g, e.u, e.v)
+      if ancestor:
+        length_of_cycle = min(length_of_cycle, g[e.u].dist + g[e.v].dist - 2*g[common_ancestor(g, e.u, e.v)].dist + 1)
+      else:
+        length_of_cycle = min(length_of_cycle, g[e.u].dist + g[e.v].dist + 1)
+  return length_of_cycle
+
+
+
+
+
+n = int(input('Enter the number of nodes in the graph - '))
+m= int(input('Enter the number of edges in the graph - '))
+
+g = [node() for i in range(n+1)]
+E = []
+for i in range(m):
+    x, y = map(int,input().split())
+    if x!=y:
+      g[x].adj.append(y)
+      g[y].adj.append(x)
+      E.append(edge(x,y))
+temp_graph = g
+s = int(input('Enter the source node - '))
+
+g[s].dist = 0
+g[s].color = 'g'
+
+bfs(g,s)

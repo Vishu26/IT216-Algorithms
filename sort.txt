@@ -1,0 +1,36 @@
+from math import log10
+from collections import OrderedDict
+
+def countingSort(li, val=9):
+
+    ans = []
+    count = [0]*(val+1)
+    for i in li:
+        count[i]+=1
+    for i in enumerate(count):
+        ans.extend([i[0]]*i[1])
+    print(*ans)
+
+
+def radixSort(li, n):
+    maxIter = int(log10(max(li)))+1
+
+    d = OrderedDict()
+    for i in range(10):
+        d[i] = []
+
+    r = 1
+    for i in range(maxIter):
+        for val in range(n):
+            d[(li[val]//r)%10].append(li[val])
+        li = []
+        for k in d:
+            li.extend(d[k])
+        for l in range(10):
+            d[l] = []
+        r *= 10
+    print(li)
+
+
+li = list(map(int, input().split()))
+radixSort(li, 8)

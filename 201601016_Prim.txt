@@ -1,0 +1,40 @@
+from heapq import *
+from collections import defaultdict,namedtuple
+node=namedtuple('node','weight,number')
+def dijkstra(a,s,n):
+    l=1
+    done=[s]
+    ans=0
+    q=[]
+    for u in a[s]:
+        heappush(q,u)
+    while l<=n and q:
+        v=heappop(q)
+        if v[1] not in done:
+            l+=1
+            done.append(v[1])
+            ans+=v[0]
+            for u in a[v[1]]:
+                if u[1] not in done:
+                    heappush(q,node(u[0],u[1]))
+    print(ans)    
+
+
+if True:
+    a=defaultdict(list)
+    n,m = input().strip().split(' ')
+    n,m = [int(n),int(m)]
+    p=[[10**6]*(n+1) for i in range(n+1)]
+    for a1 in range(m):
+        x,y,r = input().strip().split(' ')
+        x,y,r = [int(x),int(y),int(r)]
+        if x!=y:
+            p[x][y]=min(p[x][y],r)
+            p[y][x]=min(p[y][x],r)
+    for i in range(n+1):
+        for j in range(i+1,n+1):
+            if p[i][j]!=10**6:
+                a[i].append(node(p[i][j],j))
+                a[j].append(node(p[i][j],i))
+    s=int(input())          
+    dijkstra(a,s,n)

@@ -1,0 +1,65 @@
+stack = []
+visited = []
+
+def dfs(g, n):
+    global stack
+    global visited
+    visited.append(1)
+    for i in range(1, n+1):
+        for j in range(1, n+1):
+            if i!=j and g[i][j] == 1:
+                if j not in visited:
+                    visited.append(j)
+                    dfs_visit(g, j, n, 1)
+                    stack.append(i)
+
+def dfs_visit(g, node, n, flag, nodes=None):
+    global stack
+    global visited
+    if flag == 1:
+        for i in range(1, n+1):
+            if i!=node and g[node][i]==1:
+                if i not in visited:
+                    visited.append(i)
+                    dfs_visit(g, i, n, flag)
+                    stack.append(i)
+    else:
+        for i in range(1, n+1):
+            if i!=node and g[node][i]==1:
+                if i not in visited:
+                    visited.append(i)
+                    nodes.append(i)
+                    dfs_visit(g, i, n, flag, nodes)
+
+
+def stronglyConnected(g, n):
+    components = 0
+    global stack
+    global visited
+    visited = []
+    g2 = [[0] * (n + 1) for i in range(n + 1)]
+    for i in range(1, n+1):
+        for j in range(1, n+1):
+            g2[i][j] = g[j][i]
+    for node in reversed(stack):
+        if node not in visited:
+            nodes = [node]
+            visited.append(node)
+            dfs_visit(g2, node, n, 2, nodes)
+            components+=1
+            print('Component {} - {}'.format(components, nodes))
+
+
+
+n = int(input('Enter the number of nodes : '))
+m = int(input('Enter the number of edges : '))
+
+g = [[0]*(n+1) for i in range(n+1)]
+
+for i in range(m):
+    u, v = map(int, input().split())
+    g[u][v] = 1
+
+dfs(g, n)
+print(stack)
+stronglyConnected(g, n)

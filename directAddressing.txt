@@ -1,0 +1,71 @@
+####  hash_function = keys mod 10 ####
+
+class hash_table:
+
+    def __init__(self, S):
+        self.S = S
+        self.hash_function = lambda key: key%10
+        self.hash2 = lambda key: key%7
+        self.table = [-1.23]*self.S
+
+    def linearProbingInsert(self, value):
+        l = 0
+        while l<self.S:
+            if self.table[(self.hash_function(value)+l)%self.S]!=-1.23:
+                self.table[(self.hash_function(value)+l)%self.S] = value
+                break
+            l+=1
+        else:
+            print('Table is full')
+
+    def quadraticProbingInsert(self, value):
+        l = 0
+        while l<self.S:
+            if self.table[(self.hash_function(value)+l*l)%self.S]!=-1.23:
+                self.table[(self.hash_function(value)+l*l)%self.S] = value
+                break
+            l+=1
+        else:
+            print('Table is full')
+
+    def doubleHashingInsert(self, value):
+        l = 0
+        while l < self.S:
+            if self.table[(self.hash_function(value) + l * self.hash2(value)) % self.S] != -1.23:
+                self.table[(self.hash_function(value) + l * self.hash2(value)) % self.S] = value
+                break
+            l += 1
+        else:
+            print('Table is full')
+
+    def linearProbingSearch(self, value):
+        l=0
+        while self.table[(self.hash_function(value)+l)%self.S] != -1.23:
+            if self.table[(self.hash_function(value)+l)%self.S] == value:
+                print('Value found')
+                break
+        else:
+            print('Value not found')
+
+    def quadraticProbingSearch(self, value):
+        l=0
+        while self.table[(self.hash_function(value)+l*l)%self.S] != -1.23:
+            if self.table[(self.hash_function(value)+l*l)%self.S] == value:
+                print('Value found')
+                break
+        else:
+            print('Value not found')
+
+    def doubleHashingSearch(self, value):
+        l=0
+        while self.table[(self.hash_function(value)+l*self.hash2(value))%self.S] != -1.23:
+            if self.table[(self.hash_function(value)+l*self.hash2(value))%self.S] == value:
+                print('Value found')
+                break
+        else:
+            print('Value not found')
+    
+    def __str__(self):
+        return self.table
+
+table = hash_table()

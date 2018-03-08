@@ -1,0 +1,39 @@
+from collections import defaultdict
+
+stack = []
+visited = []
+
+
+def topological_sort(g):
+    global stack
+    global visited
+    for node in g:
+        if node not in visited:
+            visited.append(node)
+            dfs_visit(g, node)
+            stack.append(node)
+
+
+def dfs_visit(g, n):
+    global stack
+    global visited
+    if g.get(n):
+        for node in g[n]:
+            if node not in visited:
+                visited.append(node)
+                dfs_visit(g, node)
+                stack.append(node)
+
+
+n = int(input('Enter the number of nodes : '))
+m = int(input('Enter the number of edges : '))
+
+g = defaultdict(set)
+
+for i in range(m):
+    u, v = map(int, input().split())
+    g[u].add(v)
+
+topological_sort(g)
+
+print('Topological order is : ', *reversed(stack))
